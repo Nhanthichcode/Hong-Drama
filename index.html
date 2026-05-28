@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trạm Hóng Drama Ẩn Danh</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/styles.css"></link>
 </head>
 <body>
 
@@ -12,7 +12,7 @@
 
 <div id="imageModal" class="modal" onclick="closeModal()">
     <span class="modal-close" onclick="closeModal()">&times;</span>
-    <img id="modalImg" src="" alt="Full Screen">
+    <img id="modalImg" src="" onerror="this.onerror=null; this.src='../css/anhbiloi.png'">
 </div>
 
 <nav class="navbar">
@@ -21,35 +21,27 @@
 </nav>
 
 <div class="container">
-    <h1>Trạm Hóng Drama 🕵️‍♂️</h1>
+    <h1 id="pageTitle">Trạm Hóng Drama 🕵️‍♂️</h1>
 
     <div id="page-create" style="display: none;">
         <div class="post-form">
             <h2 style="margin-top:0; font-size: 1.2em; border-bottom: 1px solid #eee; padding-bottom: 10px;">Soạn Bài Viết Mới</h2>
-            <input type="text" id="author" placeholder="Tên ẩn danh (VD: Người qua đường A)..." oninput="updatePreview()">
+            <input type="text" id="author" placeholder="Tên ẩn danh (VD: Người qua đường A)...">
             
-            <input list="categoryList" id="category" placeholder="Chọn hoặc nhập danh mục mới..." oninput="updatePreview()" required>
+            <input list="categoryList" id="category" placeholder="Chọn hoặc nhập danh mục mới..." required>
             <datalist id="categoryList"></datalist>
             
-            <textarea id="content" placeholder="Kể lại drama bạn hóng được..." oninput="updatePreview()" required></textarea>
+            <textarea id="content" placeholder="Kể lại drama bạn hóng được..." required></textarea>
             
-            <label style="font-size: 0.85em; color: #57606f;">Dán link ảnh (Cách nhau bằng dấu phẩy nếu nhiều link):</label>
-            <textarea id="imageLink" placeholder="https://drive..., https://anh..." style="min-height: 50px;" oninput="updatePreview()"></textarea>
+            <label style="font-size: 0.85em; color: #57606f;">Dán link ảnh (Cách nhau bằng dấu phẩy):</label>
+            <textarea id="imageLink" placeholder="https://drive..., https://anh..." style="min-height: 50px;"></textarea>
             
-            <label style="font-size: 0.85em; color: #57606f;">Hoặc tải ảnh lên (Hỗ trợ chọn nhiều ảnh):</label>
-            <input type="file" id="imageFile" accept="image/*" multiple>
+            <label style="font-size: 0.85em; color: #57606f;">Tải ảnh lên (Tối đa 5MB/ảnh):</label>
+            <input type="file" id="imageFile" accept="image/*" multiple onclick="this.value=null">
             
-            <button class="btn-submit" onclick="submitPost()">🚀 Đăng Khẩn Cấp</button>
-        </div>
-
-        <div class="preview-box" id="previewBox">
-            <div class="preview-title">👀 Xem trước hiển thị</div>
-            <div class="post-header">
-                <div class="post-author" id="previewAuthor">👤 Tên ẩn danh</div>
-                <div class="post-category" id="previewCategory">🏷️ Danh mục</div>
-            </div>
-            <div class="post-content" id="previewText">Nội dung hiển thị tại đây...</div>
-            <div id="previewGallery" class="image-gallery"></div>
+            <div id="selectedFilesBox" class="file-list"></div>
+            
+            <button class="btn-submit" id="submitBtn" onclick="submitPost()">🚀 Đăng Khẩn Cấp</button>
         </div>
     </div>
 
@@ -62,8 +54,16 @@
         </div>
         <div id="feed"><p class="loading">Đang tải các bài viết mới nhất...</p></div>
     </div>
+
+    <div id="page-detail" style="display: none;">
+        <div class="btn-back" onclick="switchTab('home')">⬅️ Quay lại bảng tin</div>
+        <div id="detailContent" class="detail-box">
+            </div>
+    </div>
 </div>
 
-<script src="./js/script.js"></script>
+<script src="./js/script.js">
+    
+</script>
 </body>
 </html>
