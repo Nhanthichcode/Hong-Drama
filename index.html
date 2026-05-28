@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trạm Hóng Drama Ẩn Danh</title>
-    <link rel="stylesheet" href="./css/styles.css"></link>
+    <!-- Nhúng file giao diện CSS -->
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
 
@@ -23,6 +24,7 @@
 <div class="container">
     <h1 id="pageTitle">Trạm Hóng Drama 🕵️‍♂️</h1>
 
+    <!-- 1. TRANG ĐĂNG BÀI -->
     <div id="page-create" style="display: none;">
         <div class="post-form">
             <h2 style="margin-top:0; font-size: 1.2em; border-bottom: 1px solid #eee; padding-bottom: 10px;">Soạn Bài Viết Mới</h2>
@@ -36,15 +38,17 @@
             <label style="font-size: 0.85em; color: #57606f;">Dán link ảnh (Cách nhau bằng dấu phẩy):</label>
             <textarea id="imageLink" placeholder="https://drive..., https://anh..." style="min-height: 50px;"></textarea>
             
-            <label style="font-size: 0.85em; color: #57606f;">Tải ảnh lên (Tối đa 5MB/ảnh):</label>
+            <label style="font-size: 0.85em; color: #57606f;">Tải ảnh lên (Tối đa 10MB/ảnh - tổng cộng 100MB):</label>
             <input type="file" id="imageFile" accept="image/*" multiple onclick="this.value=null">
             
+            <!-- KHU VỰC HIỂN THỊ FILE ĐÃ CHỌN -->
             <div id="selectedFilesBox" class="file-list"></div>
             
             <button class="btn-submit" id="submitBtn" onclick="submitPost()">🚀 Đăng Khẩn Cấp</button>
         </div>
     </div>
 
+    <!-- 2. TRANG BẢNG TIN -->
     <div id="page-home">
         <div class="filter-bar">
             <label for="categoryFilter" style="font-weight: bold; color: var(--text);">Lọc danh mục:</label>
@@ -55,15 +59,16 @@
         <div id="feed"><p class="loading">Đang tải các bài viết mới nhất...</p></div>
     </div>
 
+    <!-- 3. TRANG CHI TIẾT BÀI VIẾT -->
     <div id="page-detail" style="display: none;">
         <div class="btn-back" onclick="switchTab('home')">⬅️ Quay lại bảng tin</div>
         <div id="detailContent" class="detail-box">
-            </div>
+            <!-- Nội dung chi tiết sẽ được render tại đây -->
+        </div>
     </div>
 </div>
 
-<script src="./js/script.js">
-    
-</script>
+<!-- Nhúng file logic JavaScript -->
+<script src="./js/script.js"></script>
 </body>
 </html>
