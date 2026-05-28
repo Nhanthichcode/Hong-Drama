@@ -203,7 +203,7 @@ let globalPosts = []; // Lưu trữ mảng bài viết tải về
                         <div class="post-category">${post.category}</div>
                     </div>
                     
-                    <div class="post-content ${isLongText ? 'truncate' : ''}" style="white-space: pre-wrap;">${post.content}</div>
+                    <div class="post-content ${isLongText ? 'truncate' : ''}" style="white-space: pre-wrap; padding-bottom: 10px;">${post.content}</div>
                     ${isLongText ? `<span class="read-more">Xem thêm...</span>` : ''}
                     
                     ${generateGalleryHtml(post.images, 'horizontal')}
