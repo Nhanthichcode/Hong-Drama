@@ -1,5 +1,6 @@
 
-const BACKEND_API = "http://localhost:5000";
+// const BACKEND_API = "http://localhost:5000";
+const BACKEND_API = "https://hong-drama-backend.onrender.com";
 let localFilesBase64 = [];
 
 window.onload = function () {
