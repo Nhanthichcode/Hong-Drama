@@ -2,7 +2,6 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import { v2 as cloudinary } from 'cloudinary'; 
-import url from './config.js'; 
 
 const app = express();
 
@@ -11,12 +10,12 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 
 cloudinary.config({ 
-    cloud_name: 'dkvarb5rq', 
-    api_key: '212896531192777', 
-    api_secret: 'P8_GCUktmTMVRPV-EK3M_oZm_LA' 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET 
 });
 
-mongoose.connect(url)
+mongoose.connect(process.env.MONGODB_URL)
     .then(() => console.log("MongoDB Connected"))
     .catch(err => console.log(err));
 
