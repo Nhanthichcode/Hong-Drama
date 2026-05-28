@@ -18,7 +18,6 @@ body {
     align-items: center;
 }
 
-/* Navbar */
 .navbar {
     background-color: var(--card-bg);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -68,13 +67,70 @@ h1 {
 .post-form,
 .post-card,
 .preview-box,
-.filter-bar {
+.filter-bar,
+.detail-box {
     background: var(--card-bg);
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
     border: 1px solid #f1f2f6;
+}
+
+/* CSS cho danh sách file đã chọn */
+.file-list {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f1f2f6;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85em;
+}
+
+.file-item.error {
+    background: #ffeaa7;
+    border: 1px solid #ff4757;
+    color: #ff4757;
+}
+
+.file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 250px;
+    font-weight: bold;
+}
+
+.file-size {
+    color: #747d8c;
+    font-size: 0.9em;
+}
+
+.btn-remove-file {
+    background: none;
+    border: none;
+    color: #ff4757;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.1em;
+}
+
+.post-card {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .filter-bar {
@@ -89,19 +145,6 @@ h1 {
     flex-grow: 1;
     margin-left: 10px;
     margin-bottom: 0;
-}
-
-.preview-box {
-    border: 2px dashed var(--preview-border);
-    background: #fffdf5;
-}
-
-.preview-title {
-    font-size: 0.85em;
-    color: #ffa502;
-    font-weight: bold;
-    margin-bottom: 10px;
-    text-transform: uppercase;
 }
 
 input,
@@ -136,7 +179,11 @@ textarea {
 
 .btn-submit:hover {
     background-color: #ff6b81;
-    transform: translateY(-2px);
+}
+
+.btn-submit:disabled {
+    background-color: #ced6e0;
+    cursor: not-allowed;
 }
 
 .post-header {
@@ -163,15 +210,61 @@ textarea {
     text-transform: uppercase;
 }
 
-.post-content {
-    line-height: 1.5;
-    margin-bottom: 15px;
-    font-size: 0.95em;
-    white-space: pre-wrap;
+/* Text tóm tắt ngoài bảng tin */
+.post-content.truncate {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 10px;
 }
 
-/* CẬP NHẬT: CSS Lưới Ảnh (Gallery) xịn xò */
-.image-gallery {
+.read-more {
+    color: var(--primary);
+    font-size: 0.85em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+/* CẬP NHẬT: Thư viện cuộn ngang cho Bảng tin */
+.horizontal-gallery {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 5px;
+    scroll-snap-type: x mandatory;
+    margin-bottom: 10px;
+}
+
+.horizontal-gallery::-webkit-scrollbar {
+    height: 6px;
+}
+
+.horizontal-gallery::-webkit-scrollbar-thumb {
+    background: #ced6e0;
+    border-radius: 10px;
+}
+
+.horizontal-gallery .img-wrapper {
+    scroll-snap-align: center;
+    flex: 0 0 85%;
+    max-height: 300px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: #eee;
+}
+
+.horizontal-gallery img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Lưới ảnh Grid cho Trang chi tiết */
+.grid-gallery {
     display: grid;
     gap: 5px;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -179,11 +272,11 @@ textarea {
     overflow: hidden;
 }
 
-.image-gallery.single-image {
+.grid-gallery.single-image {
     grid-template-columns: 1fr;
 }
 
-.img-wrapper {
+.grid-gallery .img-wrapper {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -192,24 +285,23 @@ textarea {
     background: #eee;
 }
 
-.image-gallery.single-image .img-wrapper {
+.grid-gallery.single-image .img-wrapper {
     aspect-ratio: auto;
-    max-height: 400px;
+    max-height: 450px;
 }
 
-.img-wrapper img {
+.grid-gallery img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-.img-wrapper:hover img {
+.grid-gallery .img-wrapper:hover img {
     transform: scale(1.05);
     filter: brightness(0.8);
 }
 
-/* Icon phóng to khi hover */
 .expand-icon {
     position: absolute;
     top: 50%;
@@ -223,11 +315,11 @@ textarea {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.img-wrapper:hover .expand-icon {
+.grid-gallery .img-wrapper:hover .expand-icon {
     opacity: 1;
 }
 
-/* CẬP NHẬT: Modal xem ảnh Full màn hình */
+/* Modal Full Screen */
 .modal {
     display: none;
     position: fixed;
@@ -240,20 +332,16 @@ textarea {
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(5px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
 }
 
 .modal.show {
     display: flex;
-    opacity: 1;
 }
 
 .modal img {
     max-width: 90%;
     max-height: 90%;
     border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     object-fit: contain;
 }
 
@@ -265,14 +353,9 @@ textarea {
     font-size: 40px;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
 }
 
-.modal-close:hover {
-    color: #ff4757;
-}
-
-/* CẬP NHẬT: Thông báo Toast góc phải mượt mà */
+/* Toast */
 .toast-container {
     position: fixed;
     bottom: 20px;
@@ -288,12 +371,9 @@ textarea {
     border-radius: 8px;
     color: white;
     font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     animation:
         slideIn 0.4s ease forwards,
         fadeOut 0.5s ease 4.5s forwards;
-    min-width: 200px;
-    text-align: center;
 }
 
 .toast.info {
@@ -334,4 +414,17 @@ textarea {
     color: #747d8c;
     font-style: italic;
     margin: 20px 0;
+}
+
+.btn-back {
+    display: inline-block;
+    margin-bottom: 15px;
+    color: #747d8c;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 5px 0;
+}
+
+.btn-back:hover {
+    color: var(--primary);
 }
