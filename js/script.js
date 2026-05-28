@@ -56,8 +56,8 @@ document.getElementById('imageFile').addEventListener('change', async function (
     const files = Array.from(e.target.files);
     localFilesBase64 = [];
     for (let file of files) {
-        if (file.size > 20 * 1024 * 1024) {
-            showToast(`File "${file.name}" vượt quá 20MB!`, 'error');
+        if (file.size > 10 * 1024 * 1024) {
+            showToast(`File "${file.name}" vượt quá 10MB!`, 'error');
             this.value = ''; updatePreview(); return;
         }
     }
