@@ -8,7 +8,7 @@
 }
 
 body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg);
     color: var(--text);
     margin: 0;
@@ -228,7 +228,7 @@ textarea {
     display: inline-block;
 }
 
-/* CẬP NHẬT: Thư viện cuộn ngang cho Bảng tin */
+/* Thư viện cuộn ngang cho Bảng tin */
 .horizontal-gallery {
     display: flex;
     overflow-x: auto;
@@ -371,9 +371,7 @@ textarea {
     border-radius: 8px;
     color: white;
     font-weight: bold;
-    animation:
-        slideIn 0.4s ease forwards,
-        fadeOut 0.5s ease 4.5s forwards;
+    animation: slideIn 0.4s ease forwards, fadeOut 0.5s ease 4.5s forwards;
 }
 
 .toast.info {
