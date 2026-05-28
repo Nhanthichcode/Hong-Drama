@@ -1,5 +1,5 @@
 const BACKEND_API = "https://hong-drama-backend.onrender.com"; // Thay link backend thực tế của bạn vào đây
-    let globalPosts = []; // Lưu trữ mảng bài viết tải về
+let globalPosts = []; // Lưu trữ mảng bài viết tải về
     let uploadFilesArray = []; // Lưu danh sách các file đang chuẩn bị upload
 
     window.onload = function() {
@@ -13,7 +13,7 @@ const BACKEND_API = "https://hong-drama-backend.onrender.com"; // Thay link back
         toast.className = `toast ${type}`;
         toast.innerText = message;
         container.appendChild(toast);
-        setTimeout(() => toast.remove(), 5000);
+        setTimeout(() => toast.remove(), 9000);
     }
 
     function openModal(imgSrc) {
@@ -50,8 +50,13 @@ const BACKEND_API = "https://hong-drama-backend.onrender.com"; // Thay link back
             // Kiểm tra trùng tên file (Tránh người dùng chọn 2 lần 1 file)
             if(uploadFilesArray.find(f => f.name === file.name)) continue;
 
+            if (file.size === 0) {
+                showToast(`File "${file.name}" bị hỏng hoặc không có dữ liệu!`, 'error');
+                continue; // Bỏ qua file này, không đưa vào danh sách
+            }    
+            
             const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-            const isOversize = file.size > 5 * 1024 * 1024; // > 5MB
+            const isOversize = file.size > 10 * 1024 * 1024; // > 10MB
             
             // Đọc file thành Base64
             const base64 = await new Promise(resolve => {
@@ -87,10 +92,16 @@ const BACKEND_API = "https://hong-drama-backend.onrender.com"; // Thay link back
 
             box.innerHTML += `
                 <div class="file-item ${file.isOversize ? 'error' : ''}">
-                    <div style="display: flex; flex-direction: column;">
-                        <span class="file-name">📎 ${file.name}</span>
-                        <span class="file-size">${file.size} MB ${file.isOversize ? '(Quá giới hạn 5MB)' : ''}</span>
+                    <!-- CẬP NHẬT: Thêm thẻ img để hiển thị ảnh thu nhỏ -->
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img src="${file.base64}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #ced6e0;">
+                        
+                        <div style="display: flex; flex-direction: column;">
+                            <span class="file-name">${file.name}</span>
+                            <span class="file-size">${file.size} / 10MB ${file.isOversize ? '(Quá giới hạn 10MB)' : ''}</span>
+                        </div>
                     </div>
+                    
                     <button class="btn-remove-file" onclick="removeFile(${index})" title="Xóa ảnh này">&times;</button>
                 </div>
             `;
@@ -100,8 +111,10 @@ const BACKEND_API = "https://hong-drama-backend.onrender.com"; // Thay link back
         submitBtn.disabled = hasError;
         if(hasError) {
             submitBtn.innerText = "⚠️ Vui lòng xóa ảnh quá dung lượng";
+            submitBtn.style.backgroundColor = "#747d8c"; // Đổi màu nút thành xám
         } else {
             submitBtn.innerText = "🚀 Đăng Khẩn Cấp";
+            submitBtn.style.backgroundColor = ""; // Trả lại màu gốc
         }
     }
 
@@ -115,7 +128,7 @@ const BACKEND_API = "https://hong-drama-backend.onrender.com"; // Thay link back
         });
     }
 
-    const errorImageBase64 = "./css/anhbiloi.png"; // Đường dẫn đến ảnh lỗi (có thể là Base64 hoặc URL)
+    const errorImageBase64 = "../css/anhbiloi.png";
 
     // === TÍNH NĂNG 3 & 4: RENDER ẢNH CUỘN NGANG (FEED) VS GRID (DETAIL) ===
     function generateGalleryHtml(imageUrls, mode = 'horizontal') {
