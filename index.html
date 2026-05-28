@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trạm Hóng Drama Ẩn Danh</title>
+    <style>
+        :root {
+            --primary: #ff4757;
+            --bg: #f1f2f6;
+            --card-bg: #ffffff;
+            --text: #2f3542;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary);
+        }
+        .post-form, .post-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        input, textarea, button {
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 10px;
+            border: 1px solid #ced6e0;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #ff6b81;
+        }
+        .post-card img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .post-author {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .error-msg {
+            color: #ff4757;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Trạm Hóng Drama 🕵️‍♂️</h1>
+
+    <div class="post-form">
+        <input type="text" id="author" placeholder="Tên ẩn danh (VD: Người qua đường A)..." required>
+        <textarea id="content" placeholder="Kể lại drama bạn hóng được..." required></textarea>
+        
+        <label style="font-size: 0.85em; color: #57606f;">Dán link ảnh (Hỗ trợ link Google Drive):</label>
+        <input type="url" id="imageLink" placeholder="https://...">
+        
+        <label style="font-size: 0.85em; color: #57606f;">Hoặc tải ảnh lên (Tối đa 20MB):</label>
+        <input type="file" id="imageFile" accept="image/*">
+        <div id="errorMsg" class="error-msg">File quá lớn! Vui lòng chọn file dưới 20MB.</div>
+
+        <button onclick="submitPost()">Đăng Khẩn Cấp</button>
+    </div>
+
+    <div id="feed"></div>
+</div>
+
+<script>
+    // Hàm chuyển đổi link Google Drive thành link hiển thị ảnh trực tiếp
+    function convertGDriveLink(url) {
+        if (!url) return '';
+        const gDriveRegex = /\/file\/d\/([a-zA-Z0-9_-]+)\/view|id=([a-zA-Z0-9_-]+)/;
+        const match = url.match(gDriveRegex);
+        
+        if (match) {
+            const fileId = match[1] || match[2];
+            return `https://drive.google.com/uc?id=${fileId}`;
+        }
+        return url; // Trả về link gốc nếu không phải link Drive
+    }
+
+    // Lắng nghe sự kiện chọn file để kiểm tra dung lượng (<= 20MB)
+    document.getElementById('imageFile').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const errorMsg = document.getElementById('errorMsg');
+        
+        if (file) {
+            const maxSize = 20 * 1024 * 1024; // 20MB tính bằng bytes
+            if (file.size > maxSize) {
+                errorMsg.style.display = 'block';
+                this.value = ''; // Xóa file đã chọn
+            } else {
+                errorMsg.style.display = 'none';
+            }
+        }
+    });
+
+    // Xử lý khi nhấn nút Đăng
+    function submitPost() {
+        const authorInput = document.getElementById('author').value.trim() || 'Người ẩn danh';
+        const contentInput = document.getElementById('content').value.trim();
+        const linkInput = document.getElementById('imageLink').value.trim();
+        const fileInput = document.getElementById('imageFile').files[0];
+
+        if (!contentInput) {
+            alert('Vui lòng nhập nội dung drama!');
+            return;
+        }
+
+        let imageUrl = convertGDriveLink(linkInput);
+
+        // Nếu người dùng chọn file từ máy, đọc file đó (Frontend Demo)
+        if (fileInput) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                renderPost(authorInput, contentInput, e.target.result);
+            }
+            reader.readAsDataURL(fileInput);
+        } else {
+            renderPost(authorInput, contentInput, imageUrl);
+        }
+
+        // Reset form
+        document.getElementById('content').value = '';
+        document.getElementById('imageLink').value = '';
+        document.getElementById('imageFile').value = '';
+    }
+
+    // Hàm tạo giao diện bài đăng và đẩy lên Feed
+    function renderPost(author, content, imageUrl) {
+        const feed = document.getElementById('feed');
+        
+        const card = document.createElement('div');
+        card.className = 'post-card';
+        
+        let htmlContent = `
+            <div class="post-author">👤 ${author}</div>
+            <div class="post-text">${content}</div>
+        `;
+
+        if (imageUrl) {
+            htmlContent += `<img src="${imageUrl}" alt="Drama Image" onerror="this.style.display='none'">`;
+        }
+
+        card.innerHTML = htmlContent;
+        feed.prepend(card); // Đẩy bài mới lên đầu
+    }
+</script>
+
+</body>
+</html>
