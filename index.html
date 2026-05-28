@@ -4,263 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trạm Hóng Drama Ẩn Danh</title>
-    <style>
-        :root {
-            --primary: #ff4757;
-            --bg: #f1f2f6;
-            --card-bg: #ffffff;
-            --text: #2f3542;
-            --preview-border: #ffa502;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 600px;
-        }
-        h1 {
-            text-align: center;
-            color: var(--primary);
-        }
-        .post-form, .post-card, .preview-box {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .preview-box {
-            border: 2px dashed var(--preview-border);
-            background: #fffdf5;
-        }
-        .preview-title {
-            font-size: 0.85em;
-            color: var(--ffa502);
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-        input, textarea, button {
-            width: 100%;
-            margin-bottom: 12px;
-            padding: 10px;
-            border: 1px solid #ced6e0;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button:hover {
-            background-color: #ff6b81;
-        }
-        .post-card img, .preview-box img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-        .post-author {
-            font-weight: bold;
-            color: var(--primary);
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-        .error-msg {
-            color: #ff4757;
-            font-size: 0.85em;
-            margin-bottom: 10px;
-            display: none;
-        }
-        .loading {
-            text-align: center;
-            color: #747d8c;
-            font-style: italic;
-        }
-    </style>
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
+
+<div id="toastContainer" class="toast-container"></div>
+
+<div id="imageModal" class="modal" onclick="closeModal()">
+    <span class="modal-close" onclick="closeModal()">&times;</span>
+    <img id="modalImg" src="" alt="Full Screen">
+</div>
+
+<nav class="navbar">
+    <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">🏠 Bảng Tin</button>
+    <button class="nav-btn" id="btn-create" onclick="switchTab('create')">✍️ Đăng Bài</button>
+</nav>
 
 <div class="container">
     <h1>Trạm Hóng Drama 🕵️‍♂️</h1>
 
-    <div class="post-form">
-        <input type="text" id="author" placeholder="Tên ẩn danh (VD: Người qua đường A)..." oninput="updatePreview()">
-        <textarea id="content" placeholder="Kể lại drama bạn hóng được..." oninput="updatePreview()" required></textarea>
-        
-        <label style="font-size: 0.85em; color: #57606f;">Dán link ảnh (Hỗ trợ link Google Drive):</label>
-        <input type="url" id="imageLink" placeholder="https://..." oninput="updatePreview()">
-        
-        <label style="font-size: 0.85em; color: #57606f;">Hoặc tải ảnh lên (Tối đa 20MB):</label>
-        <input type="file" id="imageFile" accept="image/*">
-        <div id="errorMsg" class="error-msg">File quá lớn! Vui lòng chọn file dưới 20MB.</div>
+    <div id="page-create" style="display: none;">
+        <div class="post-form">
+            <h2 style="margin-top:0; font-size: 1.2em; border-bottom: 1px solid #eee; padding-bottom: 10px;">Soạn Bài Viết Mới</h2>
+            <input type="text" id="author" placeholder="Tên ẩn danh (VD: Người qua đường A)..." oninput="updatePreview()">
+            
+            <input list="categoryList" id="category" placeholder="Chọn hoặc nhập danh mục mới..." oninput="updatePreview()" required>
+            <datalist id="categoryList"></datalist>
+            
+            <textarea id="content" placeholder="Kể lại drama bạn hóng được..." oninput="updatePreview()" required></textarea>
+            
+            <label style="font-size: 0.85em; color: #57606f;">Dán link ảnh (Cách nhau bằng dấu phẩy nếu nhiều link):</label>
+            <textarea id="imageLink" placeholder="https://drive..., https://anh..." style="min-height: 50px;" oninput="updatePreview()"></textarea>
+            
+            <label style="font-size: 0.85em; color: #57606f;">Hoặc tải ảnh lên (Hỗ trợ chọn nhiều ảnh):</label>
+            <input type="file" id="imageFile" accept="image/*" multiple>
+            
+            <button class="btn-submit" onclick="submitPost()">🚀 Đăng Khẩn Cấp</button>
+        </div>
 
-        <button onclick="submitPost()">Đăng Khẩn Cấp</button>
+        <div class="preview-box" id="previewBox">
+            <div class="preview-title">👀 Xem trước hiển thị</div>
+            <div class="post-header">
+                <div class="post-author" id="previewAuthor">👤 Tên ẩn danh</div>
+                <div class="post-category" id="previewCategory">🏷️ Danh mục</div>
+            </div>
+            <div class="post-content" id="previewText">Nội dung hiển thị tại đây...</div>
+            <div id="previewGallery" class="image-gallery"></div>
+        </div>
     </div>
 
-    <div class="preview-box" id="previewBox">
-        <div class="preview-title">👀 Xem trước bài viết</div>
-        <div class="post-author" id="previewAuthor">👤 Tên ẩn danh</div>
-        <div id="previewText" style="white-space: pre-wrap;">Nội dung hiển thị tại đây...</div>
-        <img id="previewImg" src="" alt="Preview Image" style="display: none;">
+    <div id="page-home">
+        <div class="filter-bar">
+            <label for="categoryFilter" style="font-weight: bold; color: var(--text);">Lọc danh mục:</label>
+            <select id="categoryFilter" onchange="loadPosts(this.value)">
+                <option value="">🌟 Tất cả drama</option>
+            </select>
+        </div>
+        <div id="feed"><p class="loading">Đang tải các bài viết mới nhất...</p></div>
     </div>
-
-    <hr style="border: 0; border-top: 1px solid #ccc; margin: 30px 0;">
-
-    <h2>Bảng Tin Drama 🔥</h2>
-    <div id="feed"><p class="loading">Đang tải các bài viết mới nhất...</p></div>
 </div>
 
-<script>
-    // CHỖ NÀY BỔ SUNG ĐƯỜNG DẪN BACKEND SAU KHI DEPLOY BACKEND
-    const BACKEND_API = "BỔ_SUNG_LINK_BACKEND_CỦA_BẠN_VÀO_ĐÂY"; 
-    let localFileBase64 = "";
-
-    // Tự động tải bài viết cũ khi vừa mở trang
-    window.onload = function() {
-        loadPosts();
-    };
-
-    function convertGDriveLink(url) {
-        if (!url) return '';
-        const gDriveRegex = /\/file\/d\/([a-zA-Z0-9_-]+)\/view|id=([a-zA-Z0-9_-]+)/;
-        const match = url.match(gDriveRegex);
-        if (match) {
-            const fileId = match[1] || match[2];
-            return `https://drive.google.com/uc?id=${fileId}`;
-        }
-        return url;
-    }
-
-    // Xử lý kiểm tra dung lượng file & cập nhật preview bằng Base64
-    document.getElementById('imageFile').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        const errorMsg = document.getElementById('errorMsg');
-        
-        if (file) {
-            if (file.size > 20 * 1024 * 1024) { // Chặn > 20MB
-                errorMsg.style.display = 'block';
-                this.value = '';
-                localFileBase64 = "";
-                updatePreview();
-            } else {
-                errorMsg.style.display = 'none';
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    localFileBase64 = event.target.result;
-                    updatePreview();
-                };
-                reader.readAsDataURL(file);
-            }
-        } else {
-            localFileBase64 = "";
-            updatePreview();
-        }
-    });
-
-    // Hàm cập nhật vùng Xem trước (Preview) thời gian thực
-    function updatePreview() {
-        const author = document.getElementById('author').value.trim() || 'Người ẩn danh';
-        const content = document.getElementById('content').value.trim() || 'Nội dung hiển thị tại đây...';
-        const linkInput = document.getElementById('imageLink').value.trim();
-        const previewImg = document.getElementById('previewImg');
-
-        document.getElementById('previewAuthor').innerText = `👤 ${author}`;
-        document.getElementById('previewText').innerText = content;
-
-        if (localFileBase64) {
-            previewImg.src = localFileBase64;
-            previewImg.style.display = 'block';
-        } else if (linkInput) {
-            previewImg.src = convertGDriveLink(linkInput);
-            previewImg.style.display = 'block';
-        } else {
-            previewImg.style.display = 'none';
-        }
-    }
-
-    // Lấy danh sách drama từ MongoDB thông qua Backend
-    async function loadPosts() {
-        const feed = document.getElementById('feed');
-        if (BACKEND_API.includes("BỔ_SUNG_LINK")) {
-            feed.innerHTML = "<p style='color:orange;'>Vui lòng bổ sung link Backend ở dòng số 102 để tải dữ liệu từ MongoDB.</p>";
-            return;
-        }
-        try {
-            const res = await fetch(`${BACKEND_API}/api/posts`);
-            const posts = await res.json();
-            feed.innerHTML = posts.length === 0 ? '<p>Chưa có drama nào được chia sẻ.</p>' : '';
-            posts.forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'post-card';
-                card.innerHTML = `
-                    <div class="post-author">👤 ${post.author}</div>
-                    <div style="white-space: pre-wrap;">${post.content}</div>
-                    ${post.image ? `<img src="${post.image}" onerror="this.style.display='none'">` : ''}
-                `;
-                feed.appendChild(card);
-            });
-        } catch (err) {
-            feed.innerHTML = `<p style="color:red">Lỗi kết nối dữ liệu: ${err.message}</p>`;
-        }
-    }
-
-    // Đăng bài viết lên database
-    async function submitPost() {
-        const author = document.getElementById('author').value.trim() || 'Người ẩn danh';
-        const content = document.getElementById('content').value.trim();
-        const linkInput = document.getElementById('imageLink').value.trim();
-
-        if (!content) {
-            alert('Vui lòng điền nội dung!');
-            return;
-        }
-
-        const finalImageUrl = localFileBase64 || convertGDriveLink(linkInput);
-
-        const payload = { author, content, image: finalImageUrl };
-
-        try {
-            const res = await fetch(`${BACKEND_API}/api/posts`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                alert('Đăng thành công!');
-                // Reset form
-                document.getElementById('content').value = '';
-                document.getElementById('imageLink').value = '';
-                document.getElementById('imageFile').value = '';
-                localFileBase64 = "";
-                updatePreview();
-                loadPosts(); // Tải lại bảng tin
-            } else {
-                const errData = await res.json();
-                alert('Thất bại: ' + (errData.error || 'Lỗi không xác định'));
-            }
-        } catch (err) {
-            alert('Không thể kết nối Backend: ' + err.message);
-        }
-    }
-</script>
+<script src="./js/script.js"></script>
 </body>
 </html>
