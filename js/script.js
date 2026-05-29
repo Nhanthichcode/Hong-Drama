@@ -1,4 +1,4 @@
-const BACKEND_API = "https://hong-drama-backend.onrender.com"; // Thay link backend thực tế của bạn vào đây
+const BACKEND_API = process.env.BACKEND_API;
 let globalPosts = []; // Lưu trữ mảng bài viết tải về
     let uploadFilesArray = []; // Lưu danh sách các file đang chuẩn bị upload
 
@@ -113,7 +113,7 @@ let globalPosts = []; // Lưu trữ mảng bài viết tải về
             submitBtn.innerText = "⚠️ Vui lòng xóa ảnh quá dung lượng";
             submitBtn.style.backgroundColor = "#747d8c"; // Đổi màu nút thành xám
         } else {
-            submitBtn.innerText = "🚀 Đăng Khẩn Cấp";
+            submitBtn.innerText = "Đăng Bài";
             submitBtn.style.backgroundColor = ""; // Trả lại màu gốc
         }
     }
