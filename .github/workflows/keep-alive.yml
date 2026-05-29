@@ -1,0 +1,15 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    # Cú pháp Cron: Chạy mỗi 14 phút
+    - cron: "*/14 * * * *"
+  workflow_dispatch: # Nút bấm này cho phép bạn kích hoạt chạy thử bằng tay trên GitHub
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gọi cửa Backend Render
+        # Nó sẽ dùng lệnh curl tải trang web của bạn một cách thầm lặng
+        run: curl -s ${{ vars.BACKEND_API }}/ping
