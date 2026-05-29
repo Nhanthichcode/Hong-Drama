@@ -1,4 +1,4 @@
-const BACKEND_API = process.env.BACKEND_API;
+const BACKEND_API = "https://hong-drama-backend.onrender.com";
 let globalPosts = []; // Lưu trữ mảng bài viết tải về
     let uploadFilesArray = []; // Lưu danh sách các file đang chuẩn bị upload
 
