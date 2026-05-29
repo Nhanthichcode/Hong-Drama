@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 app.use(cors({
-    origin: 'https://nhanthichcode.github.io',
+    origin: process.env.FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
@@ -107,6 +107,11 @@ app.post('/api/posts', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: 'Lỗi Server: ' + err.message });
     }
+});
+
+// API dùng để đánh thức máy chủ (Keep-alive)
+app.get('/ping', (req, res) => {
+    res.status(200).send('Đã đánh thức máy chủ.');
 });
 
 const PORT = process.env.PORT || 5000;
