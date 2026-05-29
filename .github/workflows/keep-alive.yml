@@ -2,8 +2,8 @@ name: Keep Render Alive
 
 on:
   schedule:
-    # Cú pháp Cron: Chạy mỗi 14 phút
-    - cron: "*/14 * * * *"
+    # Cú pháp Cron: Chạy mỗi 3 tiếng
+    - cron: "*/180 * * * *"
   workflow_dispatch: # Nút bấm này cho phép bạn kích hoạt chạy thử bằng tay trên GitHub
 
 jobs:
